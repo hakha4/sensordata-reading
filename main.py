@@ -1,3 +1,6 @@
+'''Author : H Hallberg 180523'''
+
+
 '''Import libs'''
 import sys
 import glob
