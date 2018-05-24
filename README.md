@@ -18,6 +18,7 @@ Incoming data formatted to select different sensors :
 For testing program:
 
 1) Download 'pythontest.ino' to any Arduino. Dallas temp. sensor connected to pin 4 as default.
+    There are numerious example how to connect the tempsensor to an Arduino. Google if unsure howto!
 
 2) run main.py file:
 
