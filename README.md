@@ -2,37 +2,24 @@
 Read sensordata from serial port and broadcast on TCP
 Python kurs 2018
 Håkan Hallberg
-Projektide’ : read sensordata from serial COM and broadcast in realtime over TCP and save data for later use
 
-P-code
-Create a Class that handles serial port
--	Check for available ports
--	Open port with correct Baud etc
--	When opened check if interrupted and take action
+Projekt idea : read different kind of sensordata from serial COM and broadcast in realtime over TCP port, save data for later use and plot data in realtime
 
-At programstart ask user for com properties,later in ini.file?
-Handle incoming data
+Use with an Arduino (or any microcontroller with serial port).
 
--	Check what type of sensor: T = temp, H = humidity etc
--	Parse data to correct format for saving/sending over TCP
+Incoming data formatted to select different sensors :
 
-Create a Class that saves data for later use
+- 'T' = temperature sensor (eg. Dallas 18b20) in format T!ROM-adress!temp.data
+- 'H' = humidity (ToDo)
+- etc.
+For testing program:
 
--	Save with timestamp
--	Save in text or database ??
+1) Download 'pythontest.ino' to any Arduino. Dallas temp. sensor connected to pin 4 as default.
+2) run main.py file:
+    - In menu at start select correct COM-port and Baudrate (115200 as default)
 
-Create a TCP-server Class that accepts multiple connections
+   Program at current state a frame to build on and will be developed further in the future
 
--	At programstart ask user for port to use for connections
--	Handle incoming requests for data
--	Send to connected clients as soon as new data arrives
 
-Error handling
-
-EXTRA ! plot incoming data
-
-Todo:
--	Check for existing Classes that could be used as a template
--	Check what technique to use for keeping the program ‘alive’. Some kind of threading ?
 
 
