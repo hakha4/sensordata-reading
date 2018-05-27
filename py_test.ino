@@ -277,7 +277,7 @@ void eval_Radiodata(String radioData)
  delay(100);//give time to catch up 
   StringToSend = StringToSend + i + sens_value +"*";
      }
-     sendData("Scripting|Read_sensors~ReadSoil~",BOARD_NO,String(numberOfSoil_sensors) + "~" + StringToSend.substring(0,StringToSend.length()-1));
+     sendData("S~",BOARD_NO,String(numberOfSoil_sensors) + "~" + StringToSend.substring(0,StringToSend.length()-1));
         } 
   //----------------- END Read soil sensors 
  
@@ -328,7 +328,7 @@ void Check_Temp()
  }
                  
  
- sendData("DS1820~",BOARD_NO,String(numberOfDevices) + "~" + StringToSend.substring(0,StringToSend.length()-1));
+ sendData("T",BOARD_NO,String(numberOfDevices) + "~" + StringToSend.substring(0,StringToSend.length()-1));
  
    }
 //--------------------END Read DS18b20 sensors and send to serial port -----------------------------------
@@ -614,7 +614,7 @@ StringToSend = StringToSend + DHT_buf + "!" + i +"*";
   
 }
  //send data to  
-sendData("Scripting|TEMPSTATUS~ReadDHT~",BOARD_NO,String(numberOfDHT11_sensors) + "~" + StringToSend);
+sendData("H~",BOARD_NO,String(numberOfDHT11_sensors) + "~" + StringToSend);
  
 }
 //---------------- END read humidity sensors -----------------------------------
