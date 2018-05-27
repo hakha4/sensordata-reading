@@ -21,7 +21,9 @@ Incoming data formatted to select different sensors :
         
         - third parameter = number of connected sensors
         
-        - fourth parameter = ROM - address for Dallas sensor
+        - fourth parameter = temperature in Celcius
+        
+        - fifth parameter = unique ROM -address for every connected  Dallas sensor
         
         
 - 'H' = humidity (ToDo)
