@@ -12,9 +12,13 @@ Use with an Arduino (or any microcontroller with serial port).
 Incoming data formatted to select different sensors :
 
 - 'T' = temperature sensor (eg. Dallas 18b20) in format: T~1~1~26.00!0!28b3a47b030000b4
+
         - second parameter = 'ID' for connected microcontroller
+        
         - third parameter = number of connected sensors
+        
         - fourth parameter = ROM - address for Dallas sensor
+        
         
 - 'H' = humidity (ToDo)
 - etc.
