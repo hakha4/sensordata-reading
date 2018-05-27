@@ -7,7 +7,7 @@ and is to be considered as a newbie project according to coding style and elegan
 
 Projekt idea : read different kind of sensordata from serial COM and broadcast in realtime over TCP port, save data for later use and plot data in realtime
 
-Use with an Arduino (or any microcontroller with serial port).
+Use with an Arduino ( pytest.ino compiled on an Arduino Nano ver.3 but any Arduino would be ok).
 
 Incoming data formatted to select different sensors :
 
