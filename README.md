@@ -11,7 +11,11 @@ Use with an Arduino (or any microcontroller with serial port).
 
 Incoming data formatted to select different sensors :
 
-- 'T' = temperature sensor (eg. Dallas 18b20) in format: T~1~1~26.00!0!28b3a47b030000b4
+- 'T' = temperature sensor (eg. Dallas 18b20) in format: 
+
+        T~1~1~26.00!0!28b3a47b030000b4
+        
+        - first parameter = 'T' for temperature (sensotype)
 
         - second parameter = 'ID' for connected microcontroller
         
