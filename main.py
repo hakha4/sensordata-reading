@@ -30,6 +30,8 @@ global BAUD
 BAUD = 0 # default baudrate = 19200, set in Menu
 global COM_port
 COM_port = 'NOT SET' # serial port
+global DEBUG # for check during development
+DEBUG = True
 
 
 
@@ -244,6 +246,7 @@ def read_serial():
         ser = serial.Serial(COM_port, BAUD)
     except (OSError, serial.SerialException):
          sys.exit("failed to open port: " + COM_port)
+
          return
 
 
@@ -254,10 +257,70 @@ def read_serial():
             reading = ser.readline().decode('utf-8')
 
             print(reading)
+            parse_data(reading)
 
 # ============================
 #     DATA HANDLING FUNCTIONS
 # ===========================
+
+
+# Parse sensordata from serialport
+def parse_data(tmpdata):
+     # check first char to see what kind of sensor
+    if tmpdata[0] == "#" and tmpdata[1] == "T":
+        eval_temp(tmpdata)
+
+# Put temperature data in variables for later processing
+def eval_temp(tempdata):
+
+    '''#####################################################################################################################################
+    Data is in format : #T_x_y_31.00!0!28b3a47b030000b4
+    #T means temperature sensor
+    x = id of connected Arduino, can be any number from 0 to 9
+    y = number of connected temp. sensors
+    31.00!0!28b3a47b030000b4 = temp. in Celcius, 0 = order of temp. sensor ( 0,1,2 .. to no. of connected), 28b3a47b030000b4 = ROM-address
+     data separated by '!' and if there is more than one sensor connected they are separated by an asterix (*)
+     ########################################################################################################################################'''
+
+
+
+    d = {}  # holds sensordatastring for each sensor
+
+    # split string to find out Arduino id, number of sensors and sensor data
+    x_list = tempdata.split('_')
+    arduino_id = x_list[1]
+    numberof_sensors = x_list[2]
+    sensor_data = x_list[3] # holds the entire sensordata string
+
+    print("Arduino id: " + arduino_id)
+    print("No. of sensor(s): " + numberof_sensors)
+    print("Sensor data: " + sensor_data)
+
+    # split sensordata for every sensor
+    if int(numberof_sensors) > 1: # means we have to split by '*' first
+        # create a list to store data in
+        multi_list = sensor_data.split('*')
+        for x in range(numberof_sensors-1): # save sensordata in a dictionary, index starts with '0' !
+            d[x] = multi_list[x]
+    else: # only one sensor
+        d[0] = sensor_data
+
+
+    # split sensordata in temperature, sensor no. and ROM-address
+    for y in range (len(d)):
+        tmp_str = d[y].split('!') # holds sensordata splitted in temp, sensor no and ROM-address
+
+        temperature = tmp_str[0]
+        sensor_no = tmp_str[1]
+        rom_address = tmp_str[2]
+        print("Temperature = " + temperature)
+        print("Sensor no  = " + sensor_no)
+        print("ROM address = " + rom_address)
+
+    # save data in textfile
+    
+    return
+
 
 # get path to script for saving textfile
 def get_app_path():
@@ -269,21 +332,12 @@ def get_timestamp():
     return datetime.datetime.now()
 
 
-# Parse sensordata from serialport
-def parse_data(tmpdata):
-# ToDo
-    pass
-
-
-
-
-
 # Plot incoming serial data
 def plot_data():
 # ToDo
     pass
 
-# Save serial sensordata for later use
+# Save serial sensordata for later use in textfile
 def save_data_toFile():
 # ToDo
     pass
