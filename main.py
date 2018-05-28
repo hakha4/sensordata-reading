@@ -20,7 +20,9 @@
 import os
 import sys
 import serial
+from datetime import date
 import time
+import errno
 
 # Define var/const
 menu_actions  = {}  # global values for Menu routines
@@ -318,7 +320,8 @@ def eval_temp(tempdata):
         print("ROM address = " + rom_address)
 
     # save data in textfile
-    
+    save_data_tofile(temperature,sensor_no,rom_address)
+
     return
 
 
@@ -327,9 +330,9 @@ def get_app_path():
     txtFilePath = os.path.dirname(os.path.realpath(sys.argv[0]))
     return  txtFilePath + "\datalog"
 
-# Get date-time to save with data
-def get_timestamp():
-    return datetime.datetime.now()
+
+
+
 
 
 # Plot incoming serial data
@@ -338,12 +341,36 @@ def plot_data():
     pass
 
 # Save serial sensordata for later use in textfile
-def save_data_toFile():
-# ToDo
-    pass
-    a = open('test.txt', 'w')
-    a.write('theunixdisaster\t 05')
-    a.close()
+def save_data_tofile(var1,var2,var3):
+
+    # get path to save to
+    path_tosave = get_app_path()
+    # make sure 'datalog' dir exists
+    try:
+        os.makedirs(path_tosave)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+    # add date-time stamp to data
+    ts = time.gmtime()
+    akt_dt = time.strftime("%Y-%m-%d %H:%M:%S", ts)
+    # create filename from date
+    filename = "Temperature_data_" + str(date.today()) + ".txt"
+
+    try:
+        with open(path_tosave + "/" + filename, 'a') as file:
+            file.write(akt_dt + "," + var1 + "," + var2 + "," + var3  )
+
+    except:
+        print("Error saving to file")
+
+
+
+
+
+
+
 
 
 # =======================
