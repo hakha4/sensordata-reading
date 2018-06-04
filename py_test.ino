@@ -65,7 +65,7 @@ unsigned long DS1307Timer;//time in sec's since midnight
 volatile byte TempTimer_interval;          // interval in secs between readings
 boolean TempTimer;                 // flag to see if interval been reached
 
-byte TempTimer_interval_Set = 10;     // user set of interval between readings
+byte TempTimer_interval_Set = 3;     // user set of interval between readings
 char* newtime;                      // current time
 
 
