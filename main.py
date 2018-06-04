@@ -20,9 +20,14 @@
 import os
 import sys
 import serial
-from datetime import date
 import time
 import errno
+from datetime import date
+#import numpy as np
+import matplotlib as plt
+from drawnow import *
+
+
 
 # Define var/const
 menu_actions  = {}  # global values for Menu routines
@@ -34,6 +39,15 @@ global COM_port
 COM_port = 'NOT SET' # serial port
 global DEBUG # for check during development
 DEBUG = True
+plt.ion() #Tell matplotlib to plot live data
+global cnt
+cnt=0 # counter in plot function
+temp_c = []
+
+
+
+
+
 
 
 
@@ -115,12 +129,14 @@ def menu1():
 
 
 
-    retval = input("Select COM-port  >>")
+    retval = input("Select COM-port (E = Exit)  >>")
     if retval == "":
         print("-----------------")
         print(" Invalid option !")
         print("-----------------")
         exec_menu('1') # Try again
+    elif retval == 'E' or retval == 'e':
+        menu_actions['main_menu']()
 
 
     elif int(retval) < 1 or int(retval) > no_ports:
@@ -163,10 +179,15 @@ def menu2():
 
 
 
-    retval = input("Select Baudrate from list above  >> ")
-    if int(retval) < 1 or int(retval) > 5:
+    retval = input("Select Baudrate from list above (E=Exit) >> ")
+
+    if retval == 'E' or retval == 'e':
+
+        menu_actions['main_menu']()
+    elif int(retval) < 1 or int(retval) > 5:
         print("Invalid Baudrate !")
         print("-----------------")
+
     else:
         set_baud(list(d.keys())[list(d.values()).index(int(retval))])
         back() # return to Main Menu
@@ -271,6 +292,7 @@ def parse_data(tmpdata):
      # check first char to see what kind of sensor
     if tmpdata[0] == "#" and tmpdata[1] == "T":
         eval_temp(tmpdata)
+    #elif tmpdata[0] == "#" and tmpdata[1] == "H" ==> Humidity ToDo
 
 # Put temperature data in variables for later processing
 def eval_temp(tempdata):
@@ -322,6 +344,7 @@ def eval_temp(tempdata):
     # save data in textfile
     save_data_tofile(temperature,sensor_no,rom_address)
 
+
     return
 
 
@@ -335,13 +358,13 @@ def get_app_path():
 
 
 
-# Plot incoming serial data
-def plot_data():
-# ToDo
-    pass
+
+
 
 # Save serial sensordata for later use in textfile
 def save_data_tofile(var1,var2,var3):
+
+    # ToDo fix timezone
 
     # get path to save to
     path_tosave = get_app_path()
@@ -352,9 +375,12 @@ def save_data_tofile(var1,var2,var3):
         if e.errno != errno.EEXIST:
             raise
 
-    # add date-time stamp to data
+    # add ime stamp to data
     ts = time.gmtime()
-    akt_dt = time.strftime("%Y-%m-%d %H:%M:%S", ts)
+    time.strftime('%X %x %Z')
+
+
+    akt_dt = time.strftime("%H:%M:%S", ts)
     # create filename from date
     filename = "Temperature_data_" + str(date.today()) + ".txt"
 
@@ -364,13 +390,37 @@ def save_data_tofile(var1,var2,var3):
 
     except:
         print("Error saving to file")
+        # plot temp
+    plot_data(var1)
+
+    return
 
 
+# ============================
+#     PLOT FUNCTIONS
+# ============================
+# Setup plot
+def makeFig():
+    plt.ylim(0, 40)  # Set y min and max values
+    plt.title('Reading Sensor Data')  # Plot title
+    plt.grid(True)  # Turn grid on
+    plt.ylabel('Temp C')  # Set y-label
+    plt.xlabel('Reading count')
+    plt.plot(temp_c, 'ro-', label='C`')  # plot temperature
+    plt.legend(loc='upper left')  # plot egend
 
+    plt.autoscale()
 
+# Plot data
+def plot_data(tmp_temp):
+    global cnt
 
-
-
+    temp_c.append(tmp_temp)  # Build our temperatureF array by appending temp readings
+    drawnow(makeFig)  # Update graph
+    plt.pause(.000001)  # To keep drawnow from crashing
+    cnt = cnt + 1
+    if (cnt > 50):  # Show 50 pts and then erase from left
+        temp_c.pop(0)
 
 
 # =======================
@@ -379,11 +429,14 @@ def save_data_tofile(var1,var2,var3):
 
 
 def main():
-    while runMode: # run main over and over. Check for better options
-         read_serial()
+    while runMode:  # run main over and over. Check for better options
+
+        read_serial()
 
 
-main_menu()
+
+    main_menu()
+
 
 
 if __name__ == '__main__': main()
