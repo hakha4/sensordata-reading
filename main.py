@@ -18,6 +18,8 @@
 
 # Import   modules needed
 import os
+import selectz
+import socket
 import sys
 import serial
 import time
@@ -26,6 +28,7 @@ from datetime import date
 #import numpy as np
 import matplotlib as plt
 from drawnow import *
+from array import array
 
 
 
@@ -39,11 +42,15 @@ global COM_port
 COM_port = 'NOT SET' # serial port
 global DEBUG # for check during development
 DEBUG = True
-plt.ion() #Tell matplotlib to plot live data
+plt.ion() #Plot live data
 global cnt
 cnt=0 # counter in plot function
-temp_c = []
+temp_c = [] # holds serial data to plot
 
+PORT = 20000 # TCP
+HOST = ''
+sel = selectz.Selector()# TCP
+tcp_mode = False
 
 
 
@@ -57,6 +64,7 @@ temp_c = []
 
 # Main menu
 def main_menu():
+    global runMode
 
     print("************************************")
     print (app_title)
@@ -78,12 +86,14 @@ def main_menu():
         print("Baudrate SET OK to " + str(BAUD))
 
     if COM_port != 'NOT SET' and BAUD != 0:
-
-# Exit Menu and Run
+        # Exit Menu and Run
         global runMode
         runMode = True
         main()
         return
+
+
+
 
 
     choice = input(" >>  ")
@@ -122,11 +132,6 @@ def menu1():
         # no ports avaliable - quit menu
         print("No port avaliable")
         exec_menu(0)
-
-
-
-
-
 
 
     retval = input("Select COM-port (E = Exit)  >>")
@@ -415,13 +420,42 @@ def makeFig():
 def plot_data(tmp_temp):
     global cnt
 
-    temp_c.append(tmp_temp)  # Build our temperatureF array by appending temp readings
+    temp_c.append(tmp_temp)  # Append temp readings
     drawnow(makeFig)  # Update graph
     plt.pause(.000001)  # To keep drawnow from crashing
     cnt = cnt + 1
     if (cnt > 50):  # Show 50 pts and then erase from left
         temp_c.pop(0)
+    if tcp_mode == True:
+        # Convert string to byte
+        s = tmp_temp + '\r'  # add CR
+        b = s.encode('ascii')
+        read(conn, b)
 
+
+# ============================
+#     TCP FUNCTIONS
+# ============================
+def accept(sock):
+    global conn
+    conn, addr = sock.accept()
+    print('accepted', conn, 'from', addr)
+    conn.setblocking(False)
+    sel.register('read', conn, read)
+
+def read(conn,tmpstr):
+
+    try:
+
+     conn.send(tmpstr)  # Hope it won't block
+    except:
+     pass
+
+sock = socket.socket()
+sock.bind(('localhost', PORT))
+sock.listen(100)
+sock.setblocking(False)
+sel.register('read', sock, accept)
 
 # =======================
 #      MAIN PROGRAM
@@ -430,12 +464,15 @@ def plot_data(tmp_temp):
 
 def main():
     while runMode:  # run main over and over. Check for better options
+        if tcp_mode == True:
+            sel.select()
+
 
         read_serial()
 
 
-
     main_menu()
+
 
 
 
