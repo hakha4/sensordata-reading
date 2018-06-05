@@ -50,6 +50,11 @@ For testing program:
         - program depends on this, see https://github.com/pdxjohnny/selectz
    - no serial data
         - check devicemanager (windows) for correct COM-port connected to Arduino
+        
+    ToDo:
+    - add more robust error handling
+    - update graph to show multiple sensors and fix scaling etc
+    - move code to classes 
 
 
 
