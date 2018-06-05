@@ -39,6 +39,7 @@ For testing program:
     There are numerious example how to connect the tempsensor to an Arduino. Google if unsure howto!
 
 2) run main.py file:
+    - Decide if You want to open a tcp port for showing sensordata, read instructions on screen
 
     - In menu at start select correct COM-port and Baudrate (115200 as default)
 

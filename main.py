@@ -53,9 +53,18 @@ sel = selectz.Selector()# TCP
 tcp_mode = False
 
 
-
-
-
+# =======================
+#     TCP options
+# =======================
+retval = input("Do You want to connect to TCP ? Y/N  >>")
+if retval == 'Y' or retval == 'y':
+    tcp_mode = True
+print("==================================================================================================")
+print("Open Putty or any terminal and set IP to 'localhost' if on the same machine as Python program")
+print("or set a valid IP-adress")
+print("select port 20000 and 'Telnet'")
+print("MAKE SURE TO OPEN PUTTY OR TERMINAL BEFORE PROCEEDING !")
+print("==================================================================================================")
 
 
 # =======================
@@ -69,6 +78,7 @@ def main_menu():
     print("************************************")
     print (app_title)
     print("************************************\n")
+    print()
     print("To get the program to work, sensor controller must be connected and\nCOM-port and Baudrate MUST be set to proper values !\n")
     print ("Select option:")
     print ("1. Set COM-port")
