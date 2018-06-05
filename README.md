@@ -44,6 +44,12 @@ For testing program:
     - In menu at start select correct COM-port and Baudrate (115200 as default)
 
    Program at current state a frame to build on but may be developed further in the future
+   
+   Troubleshooting:
+   - ModuleNotFoundError: No module named 'selectz'
+        - program depends on this, see https://github.com/pdxjohnny/selectz
+   - no serial data
+        - check devicemanager (windows) for correct COM-port connected to Arduino
 
 
 
